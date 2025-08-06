@@ -25,8 +25,12 @@ public class Produit implements Serializable {
     @Column(name="prix_unitaire",nullable = false)
     private Double prixUnitaire;
 
+    @Column(name="unite_mesure",nullable = false)
+    private String uniteMesure;
+
     @Column(name="tva",nullable = false)
     private Double tva;
+
 
 
 

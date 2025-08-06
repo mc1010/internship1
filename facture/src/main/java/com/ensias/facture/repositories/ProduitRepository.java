@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 public interface ProduitRepository extends JpaRepository<Produit,Long> {
-    Optional<Produit> findById(Long id);
-
+    boolean existsByNom(String nom);
+    Optional<Produit> findByNom(String nom);
     List<Produit> findAll();
 
     List<Produit> findByNomContainingIgnoreCase(String nom); //chercher produit par nom

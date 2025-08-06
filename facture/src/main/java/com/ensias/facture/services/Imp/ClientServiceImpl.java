@@ -3,6 +3,8 @@ package com.ensias.facture.services.Imp;
 import com.ensias.facture.dto.ClientResponse;
 import com.ensias.facture.dto.CreateClientRequest;
 import com.ensias.facture.dto.UpdateClientRequest;
+import com.ensias.facture.exception.AlreadyExistsException;
+import com.ensias.facture.exception.NotFoundException;
 import com.ensias.facture.mappers.ClientMapper;
 import com.ensias.facture.models.Client;
 import com.ensias.facture.repositories.ClientRepository;
@@ -24,6 +26,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponse createClient(CreateClientRequest request) {
+        if (clientRepository.existsByIce(request.getIce())){
+            throw new AlreadyExistsException("Client with ICE " + request.getIce() + " already exists");
+        }
         // Conversion DTO vers Entité
         Client client = clientMapper.toEntity(request);
         // Sauvegarde dans la base
@@ -34,7 +39,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponse getClientById(Integer id) {
-        Client client = clientRepository.findById(id).orElseThrow(()->new RuntimeException("Client not found"));
+        Client client = clientRepository.findById(id).orElseThrow(()->new NotFoundException("Client with id " + id + " not found"));
         return clientMapper.toDto(client);
     }
 
@@ -53,7 +58,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientResponse updateClient(Integer id, UpdateClientRequest request) {
-        Client clientexiste= clientRepository.findById(id).orElseThrow(()-> new RuntimeException("Client not found"));
+        Client clientexiste= clientRepository.findById(id).orElseThrow(()-> new NotFoundException("Client with id " + id + " not found"));
         clientMapper.updateClientfromDto(request,clientexiste);
         Client updatedClient = clientRepository.save(clientexiste);
         return clientMapper.toDto(updatedClient);
@@ -61,7 +66,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void deleteClient(Integer id) {
-        Client client = clientRepository.findById(id).orElseThrow(()-> new RuntimeException("Client not found"));
+        Client client = clientRepository.findById(id).orElseThrow(()-> new NotFoundException("Client with id " + id + " not found"));
         clientRepository.delete(client);
     }
 }
