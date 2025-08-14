@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,12 +26,16 @@ public class Devis implements Serializable {
     @Column(name="date_creation", nullable = false)
     private LocalDate dateCreation;
 
+    @Column(name="date_expiration", nullable = false)
+    private LocalDate dateExpiration;
+
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+
     @Column(name = "montant_total")
-    private Double montantTotal;
+    private Double montantTotal= 0.0;
 
     @Column(columnDefinition = "TEXT")
     private String conditions;
@@ -40,7 +45,7 @@ public class Devis implements Serializable {
     private Statut statut;
 
     @OneToMany(mappedBy = "devis", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<LigneDevis> lignesDevis;
+    private List<LigneDevis> lignesDevis = new ArrayList<>();
 
 
 }
