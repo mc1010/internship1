@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 public interface FactureRepository extends JpaRepository<Facture,Long> {
-    Optional<Facture> findById(Long id); //chercher une facture par ID
 
     List<Facture> findByClientId(Integer clientId); //toutes les factures d’un client
 

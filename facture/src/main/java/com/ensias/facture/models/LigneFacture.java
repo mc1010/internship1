@@ -17,12 +17,6 @@ public class LigneFacture implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="quantite", nullable = false)
-    private int quantite;
-
-    @Column(name="prixTotal", nullable = false)
-    private Double prixTotal;
-
     @ManyToOne
     @JoinColumn(name="produit_id",nullable = false)
     private Produit produit;
@@ -31,5 +25,22 @@ public class LigneFacture implements Serializable {
     @JoinColumn(name="facture_id",nullable = false)
     private Facture facture;
 
+    @Column(name="quantite", nullable = false)
+    private Integer quantite;
+    @Column(nullable=false)
+    private Double prixUnitaireHT;
 
+    @Column(nullable=false)
+    private Double montantHT;
+
+    @Column(nullable=false)
+    private Double montantTVA;
+
+    @Column(nullable=false)
+    private Double montantTTC;
 }
+
+
+
+
+

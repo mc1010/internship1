@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,8 +26,6 @@ public class Facture implements Serializable {
     @Column(name = "date_emission", nullable = false)
     private LocalDate dateEmission;
 
-    @Column(name = "montant_total", nullable = false)
-    private Double montantTotal;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "statut_paiement", nullable = false)
@@ -37,7 +36,7 @@ public class Facture implements Serializable {
     private Client client;
 
     @OneToMany(mappedBy = "facture", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<LigneFacture> lignesFacture;
+    private List<LigneFacture> lignesFacture= new ArrayList<>();
     // ← Une facture contient plusieurs lignes (produits + quantités)
     // mappedBy = "facture" → ça veut dire que la relation est définie dans la classe LigneFacture
     // cascade = ALL → si on supprime/ajoute une facture, on le fait aussi pour ses lignes
@@ -48,8 +47,14 @@ public class Facture implements Serializable {
     @JoinColumn(name = "devis_id")
     private Devis devisAssocie;
 
-    @Column(name = "tva_applicable")
-    private Double tvaApplicable;
+    @Column(nullable=false)
+    private Double totalHT;
+
+    @Column(nullable=false)
+    private Double totalTVA;
+
+    @Column(nullable=false)
+    private Double totalTTC;
 
     @Column(columnDefinition = "TEXT")
     private String conditions;
