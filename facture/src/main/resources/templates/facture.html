@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Facture</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size:12px; line-height:1.4; color:#333; background:#fff; padding:20px; }
+        .invoice-container { max-width:800px; margin:0 auto; background:#fff; border:2px solid #2563EB; }
+
+        /* Header */
+        .header {
+            background-color:#2563EB;
+            color:white;
+            padding:15px 30px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 30px;
+            right: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #ffffff40 20%, #ffffff80 50%, #ffffff40 80%, transparent 100%);
+        }
+        .header-left { flex: 0 0 auto; }
+        .header-right { flex: 1; text-align: right; }
+        .header img {
+            max-height:70px;
+            width:auto;
+            background: rgba(255,255,255,0.95);
+            padding:6px;
+            border-radius:8px;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size:20px;
+            font-weight:300;
+            letter-spacing:3px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        /* Content */
+        .content { padding:30px; }
+        .info-section { margin-bottom:30px; width:100%; display:table; }
+        .info-card { display:table-cell; width:48%; vertical-align:top; background-color:#f8f9fa; border:1px solid #e9ecef; padding:20px; margin-right:4%; }
+        .info-card:last-child { margin-right:0; }
+        .info-card h3 { color:#2563EB; font-size:14px; font-weight:bold; margin-bottom:15px; padding-bottom:5px; border-bottom:2px solid #2563EB; }
+        .info-row { margin-bottom:8px; padding:5px 0; }
+        .info-label { font-weight:bold; color:#495057; display:inline-block; width:100px; }
+        .info-value { color:#212529; font-weight:normal; }
+        .status-badge { background-color:#28a745; color:white; padding:4px 12px; font-size:11px; font-weight:bold; text-transform:uppercase; border:1px solid #28a745; }
+
+        /* Table */
+        .products-table { width:100%; border-collapse:collapse; margin:30px 0; border:2px solid #2563EB; }
+        .products-table th { background-color:#2563EB; color:white; padding:12px 8px; text-align:left; font-weight:bold; font-size:11px; text-transform:uppercase; border-right:1px solid #1d4ed8; }
+        .products-table th:last-child { border-right:none; }
+        .products-table td { padding:10px 8px; border-bottom:1px solid #dee2e6; border-right:1px solid #dee2e6; color:#495057; }
+        .products-table td:last-child { border-right:none; }
+        .products-table tbody tr:nth-child(even) { background-color:#f8f9fa; }
+        .products-table tbody tr:nth-child(odd) { background-color:white; }
+        .products-table tfoot { background-color:#343a40; }
+        .products-table tfoot td { color:white; font-weight:bold; font-size:13px; padding:15px 8px; border:none; }
+        .amount-highlight { font-weight:bold; color:#dc3545; font-size:13px; }
+
+        /* Conditions */
+        .conditions { background-color:#fff3cd; border:1px solid #ffeaa7; border-left:4px solid #f39c12; padding:20px; margin:25px 0; }
+        .conditions p { color:#856404; font-style:italic; margin:0; font-size:12px; line-height:1.5; }
+
+        /* Footer */
+        .footer { text-align:center; padding:25px; background-color:#f8f9fa; border-top:3px solid #2563EB; margin-top:20px; }
+        .footer p { color:#6c757d; font-size:14px; font-weight:bold; margin:0; }
+
+        .text-right { text-align:right; }
+        .text-center { text-align:center; }
+        .font-bold { font-weight:bold; }
+
+        @media print {
+            body { padding:10px; }
+            .invoice-container { border:1px solid #000; }
+            .header {
+                background-color:#2563EB !important;
+                -webkit-print-color-adjust:exact;
+                color-adjust:exact;
+            }
+            .header::after { display: none; }
+            .header img { background: white !important; box-shadow: none !important; }
+            .products-table th { -webkit-print-color-adjust:exact; color-adjust:exact; }
+            .products-table tfoot { -webkit-print-color-adjust:exact; color-adjust:exact; }
+            .status-badge { -webkit-print-color-adjust:exact; color-adjust:exact; }
+        }
+
+        @media (max-width:600px) {
+            .info-card { display:block; width:100%; margin-bottom:20px; }
+            .header { flex-direction:column; text-align:center; padding:20px; }
+            .header-left { margin-bottom:10px; }
+            .header-right { text-align:center; }
+            .products-table { font-size:10px; }
+            .products-table th, .products-table td { padding:6px 4px; }
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <img th:src="'data:image/jpg;base64,' + ${logoBase64}" alt="Logo" />
+        </div>
+        <div class="header-right">
+            <h1>FACTURE</h1>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+        <div class="info-section">
+            <div class="info-card">
+                <h3>INFORMATIONS FACTURE</h3>
+                <div class="info-row">
+                    <span class="info-label">Numéro:</span>
+                    <span class="info-value font-bold" th:text="${facture.numero}"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value" th:text="${facture.dateEmission}"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Statut:</span>
+                    <span class="status-badge" th:text="${facture.statutPaiement}"></span>
+                </div>
+                <div class="info-row" th:if="${facture.devisAssocieId != null}">
+                    <span class="info-label">Devis associé:</span>
+                    <span class="info-value" th:text="${facture.devisAssocieId}"></span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>INFORMATIONS CLIENT</h3>
+                <div class="info-row">
+                    <span class="info-label">Client:</span>
+                    <span class="info-value font-bold" th:text="${facture.clientRaisonSociale}"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ICE:</span>
+                    <span class="info-value" th:text="${facture.clientIce}"></span>
+                </div>
+            </div>
+        </div>
+
+        <table class="products-table">
+            <thead>
+            <tr>
+                <th>Produit / Service</th>
+                <th>Quantité</th>
+                <th>Prix Unitaire (HT)</th>
+                <th>Montant HT</th>
+                <th>TVA</th>
+                <th>Montant TTC</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ligne : ${facture.lignes}">
+                <td th:text="${ligne.produitNom}"></td>
+                <td class="text-center" th:text="${ligne.quantite}"></td>
+                <td class="text-right" th:text="${#numbers.formatDecimal(ligne.prixUnitaireHT,1,'COMMA',2,'POINT')} + ' MAD'"></td>
+                <td class="text-right" th:text="${#numbers.formatDecimal(ligne.montantHT,1,'COMMA',2,'POINT')} + ' MAD'"></td>
+                <td class="text-right" th:text="${#numbers.formatDecimal(ligne.montantTVA,1,'COMMA',2,'POINT')} + ' MAD'"></td>
+                <td class="text-right amount-highlight" th:text="${#numbers.formatDecimal(ligne.montantTTC,1,'COMMA',2,'POINT')} + ' MAD'"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3" class="font-bold">TOTAUX</td>
+                <td class="text-right font-bold" th:text="${#numbers.formatDecimal(facture.totalHT,1,'COMMA',2,'POINT')} + ' MAD'"></td>
+                <td class="text-right font-bold" th:text="${#numbers.formatDecimal(facture.totalTVA,1,'COMMA',2,'POINT')} + ' MAD'"></td>
+                <td class="text-right font-bold amount-highlight" th:text="${#numbers.formatDecimal(facture.totalTTC,1,'COMMA',2,'POINT')} + ' MAD'"></td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <div class="conditions">
+            <p><strong>CONDITIONS:</strong> <span th:text="${facture.conditions}"></span></p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p> Merci pour votre confiance ! </p>
+    </div>
+
+</div>
+</body>
+</html>

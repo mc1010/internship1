@@ -3,10 +3,11 @@ package com.ensias.facture.controllers;
 
 import com.ensias.facture.dto.*;
 import com.ensias.facture.services.FactureService;
+import com.ensias.facture.services.PdfService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FactureController {
     private final FactureService factureService;
+    private final PdfService pdfService;
 
     //----Crud Facture---------
 
@@ -66,4 +68,28 @@ public class FactureController {
     public void deleteLigneFacture(@PathVariable Long factureId, @PathVariable Long ligneId) {
         factureService.deleteLigneFacture(factureId, ligneId);
     }
+
+    //__AUTRES FONCTIONNALITES
+
+    // Endpoint pour transformer un devis en facture
+    @PostMapping("/transformer/{devisId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public FactureDto transformerDevisEnFacture( @PathVariable Long devisId) {
+        return factureService.transformerDevisEnFacture(devisId);
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> getFacturePdf(@PathVariable Long id) {
+        FactureDto facture = factureService.getFactureById(id); // récupère la facture
+        byte[] pdfBytes = pdfService.genererFacturePdf(facture);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("Facture_" + facture.numero() + ".pdf")
+                .build());
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
 }

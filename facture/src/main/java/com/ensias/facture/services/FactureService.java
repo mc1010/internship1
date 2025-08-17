@@ -19,6 +19,7 @@ public interface FactureService {
     LigneFactureDto addLigneToFacture(Long factureId, CreateLigneFactureRequest dto);
     LigneFactureDto updateLigneFacture(Long factureId, Long ligneId, UpdateLigneFactureDto dto);
     void deleteLigneFacture(Long factureId, Long ligneId);
+    FactureDto transformerDevisEnFacture(Long devisId);
 
 
 }

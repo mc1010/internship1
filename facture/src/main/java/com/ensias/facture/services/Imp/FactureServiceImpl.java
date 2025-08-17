@@ -4,14 +4,8 @@ import com.ensias.facture.dto.*;
 import com.ensias.facture.exception.NotFoundException;
 import com.ensias.facture.mappers.FactureMapper;
 import com.ensias.facture.mappers.LigneFactureMapper;
-import com.ensias.facture.models.Client;
-import com.ensias.facture.models.Facture;
-import com.ensias.facture.models.LigneFacture;
-import com.ensias.facture.models.StatutPaiement;
-import com.ensias.facture.repositories.ClientRepository;
-import com.ensias.facture.repositories.FactureRepository;
-import com.ensias.facture.repositories.LigneFactureRepository;
-import com.ensias.facture.repositories.ProduitRepository;
+import com.ensias.facture.models.*;
+import com.ensias.facture.repositories.*;
 import com.ensias.facture.services.FactureService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +23,7 @@ public class FactureServiceImpl implements FactureService {
     private final LigneFactureRepository ligneFactureRepository;
     private final ClientRepository clientRepository;
     private final ProduitRepository produitRepository;
+    private final DevisRepository devisRepository;
 
     private final FactureMapper factureMapper;
     private final LigneFactureMapper ligneFactureMapper;
@@ -210,6 +205,49 @@ public class FactureServiceImpl implements FactureService {
             facture.setTotalTVA(totalTVA);
             facture.setTotalTTC(totalTTC);
     }
+    @Override
+    public FactureDto transformerDevisEnFacture(Long devisId) {
+        Devis devis = devisRepository.findById(devisId)
+                .orElseThrow(() -> new NotFoundException("Devis avec ID " + devisId + " non trouvé"));
+
+        // Vérifier que le devis est accepté
+        if (!devis.getStatut().equals(Statut.ACCEPTE)) {
+            throw new IllegalStateException("Seuls les devis acceptés peuvent être transformés en facture");
+        }
+
+        Facture facture = new Facture();
+        facture.setClient(devis.getClient());
+        facture.setDateEmission(LocalDate.now());
+        facture.setConditions(devis.getConditions());
+        facture.setStatutPaiement(StatutPaiement.IMPAYEE);
+        String numero = "FAC-" + LocalDate.now().getYear() + "-" + String.format("%04d", factureRepository.count() + 1);
+        facture.setNumero(numero);
+        facture.setDevisAssocie(devis);
+
+        // Copier les lignes
+        for (LigneDevis ligneDevis : devis.getLignesDevis()) {
+            LigneFacture ligneFacture = getLigneFacture(ligneDevis, facture);
+            facture.getLignesFacture().add(ligneFacture);
+        }
+
+        recalculerTotaux(facture);
+        Facture saved = factureRepository.save(facture);
+
+        return factureMapper.toDto(saved);
+    }
+
+    private  LigneFacture getLigneFacture(LigneDevis ligneDevis, Facture facture) {
+        LigneFacture ligneFacture = new LigneFacture();
+        ligneFacture.setFacture(facture);
+        ligneFacture.setProduit(ligneDevis.getProduit());
+        ligneFacture.setQuantite(ligneDevis.getQuantite());
+        ligneFacture.setPrixUnitaireHT(ligneDevis.getProduit().getPrixUnitaire());
+        ligneFacture.setMontantHT(ligneDevis.getQuantite() * ligneDevis.getProduit().getPrixUnitaire());
+        ligneFacture.setMontantTVA(ligneFacture.getMontantHT() * ligneDevis.getProduit().getTva() / 100);
+        ligneFacture.setMontantTTC(ligneFacture.getMontantHT() + ligneFacture.getMontantTVA());
+        return ligneFacture;
+    }
+
 
 }
 
