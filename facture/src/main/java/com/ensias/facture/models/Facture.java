@@ -58,4 +58,7 @@ public class Facture implements Serializable {
 
     @Column(columnDefinition = "TEXT")
     private String conditions;
+    @OneToMany(mappedBy = "facture", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Paiement> paiements;
+
 }
