@@ -6,13 +6,13 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family: Arial, Helvetica, sans-serif; font-size:12px; line-height:1.4; color:#333; background:#fff; padding:20px; }
-        .invoice-container { max-width:800px; margin:0 auto; background:#fff; border:2px solid #2563EB; }
+        .invoice-container { max-width:800px; margin:0 auto; background:#fff; border:2px solid #1e40af; }
 
         /* Header */
         .header {
-            background-color:#2563EB;
+            background-color:#1e40af;
             color:white;
-            padding:15px 30px;
+            padding:20px 30px;
             display:flex;
             justify-content:space-between;
             align-items:center;
@@ -25,23 +25,23 @@
             left: 30px;
             right: 30px;
             height: 2px;
-            background: linear-gradient(90deg, transparent 0%, #ffffff40 20%, #ffffff80 50%, #ffffff40 80%, transparent 100%);
+            background-color: rgba(255,255,255,0.3);
         }
         .header-left { flex: 0 0 auto; }
         .header-right { flex: 1; text-align: right; }
         .header img {
-            max-height:70px;
+            max-height:110px;
             width:auto;
-            background: rgba(255,255,255,0.95);
-            padding:6px;
-            border-radius:8px;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: white;
+            padding:15px;
+            border-radius:6px;
+            border: 2px solid rgba(255,255,255,0.8);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         .header h1 {
-            font-size:20px;
-            font-weight:300;
-            letter-spacing:3px;
+            font-size:22px;
+            font-weight:bold;
+            letter-spacing:4px;
             margin: 0;
             text-transform: uppercase;
         }
@@ -49,23 +49,23 @@
         /* Content */
         .content { padding:30px; }
         .info-section { margin-bottom:30px; width:100%; display:table; }
-        .info-card { display:table-cell; width:48%; vertical-align:top; background-color:#f8f9fa; border:1px solid #e9ecef; padding:20px; margin-right:4%; }
+        .info-card { display:table-cell; width:48%; vertical-align:top; background-color:#f8f9fa; border:1px solid #1e40af; padding:20px; margin-right:4%; }
         .info-card:last-child { margin-right:0; }
-        .info-card h3 { color:#2563EB; font-size:14px; font-weight:bold; margin-bottom:15px; padding-bottom:5px; border-bottom:2px solid #2563EB; }
+        .info-card h3 { color:#1e40af; font-size:14px; font-weight:bold; margin-bottom:15px; padding-bottom:5px; border-bottom:2px solid #1e40af; }
         .info-row { margin-bottom:8px; padding:5px 0; }
         .info-label { font-weight:bold; color:#495057; display:inline-block; width:100px; }
         .info-value { color:#212529; font-weight:normal; }
-        .status-badge { background-color:#28a745; color:white; padding:4px 12px; font-size:11px; font-weight:bold; text-transform:uppercase; border:1px solid #28a745; }
+        .status-badge { background-color:#28a745; color:white; padding:4px 12px; font-size:11px; font-weight:bold; text-transform:uppercase; border:1px solid #28a745; border-radius:4px; }
 
         /* Table */
-        .products-table { width:100%; border-collapse:collapse; margin:30px 0; border:2px solid #2563EB; }
-        .products-table th { background-color:#2563EB; color:white; padding:12px 8px; text-align:left; font-weight:bold; font-size:11px; text-transform:uppercase; border-right:1px solid #1d4ed8; }
+        .products-table { width:100%; border-collapse:collapse; margin:30px 0; border:2px solid #1e40af; }
+        .products-table th { background-color:#1e40af; color:white; padding:12px 8px; text-align:left; font-weight:bold; font-size:11px; text-transform:uppercase; border-right:1px solid #1e3a8a; }
         .products-table th:last-child { border-right:none; }
         .products-table td { padding:10px 8px; border-bottom:1px solid #dee2e6; border-right:1px solid #dee2e6; color:#495057; }
         .products-table td:last-child { border-right:none; }
         .products-table tbody tr:nth-child(even) { background-color:#f8f9fa; }
         .products-table tbody tr:nth-child(odd) { background-color:white; }
-        .products-table tfoot { background-color:#343a40; }
+        .products-table tfoot { background-color:#1e3a8a; }
         .products-table tfoot td { color:white; font-weight:bold; font-size:13px; padding:15px 8px; border:none; }
         .amount-highlight { font-weight:bold; color:#dc3545; font-size:13px; }
 
@@ -74,8 +74,8 @@
         .conditions p { color:#856404; font-style:italic; margin:0; font-size:12px; line-height:1.5; }
 
         /* Footer */
-        .footer { text-align:center; padding:25px; background-color:#f8f9fa; border-top:3px solid #2563EB; margin-top:20px; }
-        .footer p { color:#6c757d; font-size:14px; font-weight:bold; margin:0; }
+        .footer { text-align:center; padding:25px; background-color:#f8f9fa; border-top:3px solid #1e40af; margin-top:20px; }
+        .footer p { color:#1e40af; font-size:14px; font-weight:bold; margin:0; }
 
         .text-right { text-align:right; }
         .text-center { text-align:center; }
@@ -85,15 +85,17 @@
             body { padding:10px; }
             .invoice-container { border:1px solid #000; }
             .header {
-                background-color:#2563EB !important;
+                background-color:#1e40af !important;
                 -webkit-print-color-adjust:exact;
                 color-adjust:exact;
             }
-            .header::after { display: none; }
+            .header::after { background-color: rgba(255,255,255,0.3) !important; }
             .header img { background: white !important; box-shadow: none !important; }
-            .products-table th { -webkit-print-color-adjust:exact; color-adjust:exact; }
-            .products-table tfoot { -webkit-print-color-adjust:exact; color-adjust:exact; }
+            .products-table th { background-color:#1e40af !important; -webkit-print-color-adjust:exact; color-adjust:exact; }
+            .products-table tfoot { background-color:#1e3a8a !important; -webkit-print-color-adjust:exact; color-adjust:exact; }
             .status-badge { -webkit-print-color-adjust:exact; color-adjust:exact; }
+            .info-card { border:1px solid #1e40af !important; }
+            .footer { border-top:3px solid #1e40af !important; }
         }
 
         @media (max-width:600px) {

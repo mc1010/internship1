@@ -12,5 +12,6 @@ public interface ProduitRepository extends JpaRepository<Produit,Long> {
     Optional<Produit> findByNom(String nom);
     List<Produit> findAll();
 
-    List<Produit> findByNomContainingIgnoreCase(String nom); //chercher produit par nom
+    List<Produit> findByNomContainingIgnoreCase(String nom);//chercher produit par nom
+
 }
