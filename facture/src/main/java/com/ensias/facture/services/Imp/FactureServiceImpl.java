@@ -40,8 +40,17 @@ public class FactureServiceImpl implements FactureService {
         facture.setDateEmission(LocalDate.now());
         facture.setConditions(dto.conditions());
         facture.setStatutPaiement(StatutPaiement.IMPAYEE);
-        String numero = "FAC-" + LocalDate.now().getYear() + "-" + String.format("%04d", factureRepository.count() + 1);
-        facture.setNumero(numero);
+
+        // Génération du numéro avec logique similaire aux devis
+        int year = LocalDate.now().getYear();
+        Facture lastFacture = factureRepository.findTopByNumeroStartingWithOrderByIdDesc("FAC-" + year + "-");
+        int next = 1;
+        if (lastFacture != null) {
+            String[] parts = lastFacture.getNumero().split("-");
+            next = Integer.parseInt(parts[2]) + 1;
+        }
+        facture.setNumero("FAC-" + year + "-" + String.format("%04d", next));
+
         if (dto.lignes() != null) {
             for (CreateLigneFactureRequest ligneDto : dto.lignes()) {
                 var produit = produitRepository.findById(ligneDto.produitId())

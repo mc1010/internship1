@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/devis")
+@CrossOrigin(origins = "http://localhost:5174")
 public class DevisController {
     private final DevisService devisService;
 

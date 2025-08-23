@@ -21,5 +21,7 @@ public interface DevisRepository extends JpaRepository<Devis,Long> {
 
     @Query("SELECT d FROM Devis d WHERE d.dateCreation >= :start AND d.dateCreation <= :end")
     List<Devis> findByDateCreationBetweenDates(@Param("start") LocalDate start, @Param("end") LocalDate end);
+    Devis findTopByNumeroDevisStartingWithOrderByIdDesc(String prefix);
+
 
 }

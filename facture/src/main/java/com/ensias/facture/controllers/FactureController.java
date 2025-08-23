@@ -16,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/factures")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5174")
 public class FactureController {
     private final FactureService factureService;
     private final PdfService pdfService;

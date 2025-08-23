@@ -16,6 +16,6 @@ public interface FactureRepository extends JpaRepository<Facture,Long> {
     List<Facture> findByStatutPaiement(StatutPaiement statut); //factures par statut (payée, impayée, etc.)
 
     List<Facture> findByDateEmissionBetween(LocalDate start, LocalDate end); // factures émises dans une plage de dates
-
+     Facture findTopByNumeroStartingWithOrderByIdDesc(String prefix);
 
 }

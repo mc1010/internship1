@@ -45,8 +45,14 @@ public class DevisServiceImpl implements DevisService {
         devis.setDateExpiration(dto.dateExpiration());
         devis.setStatut(Statut.EN_ATTENTE);
         //GEneration du numero
-        String numero="DEV-" + LocalDate.now().getYear() + "-" + String.format("%04d",devisRepository.count()+1);
-        devis.setNumeroDevis(numero);
+        int year = LocalDate.now().getYear();
+        Devis lastDevis = devisRepository.findTopByNumeroDevisStartingWithOrderByIdDesc("DEV-" + year + "-");
+        int next = 1;
+        if (lastDevis != null) {
+            String[] parts = lastDevis.getNumeroDevis().split("-");
+            next = Integer.parseInt(parts[2]) + 1;
+        }
+        devis.setNumeroDevis("DEV-" + year + "-" + String.format("%04d", next));
         // Créer les lignes si elles existent dans le DTO
         if (dto.lignes() != null) {
             for (CreateLigneDevisRequest ligneDto : dto.lignes()) {
